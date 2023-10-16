@@ -1,57 +1,36 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
-import axios from "axios";
+import { login, logout } from "./services/services";
 import { User } from "./types";
 import "./App.css";
 
 function App() {
   const isUser = sessionStorage.getItem("is-authenticated") === "true";
-  const isSaved = localStorage.getItem("user_email");
+  const isSavedUser = localStorage.getItem("user_email");
 
+  const [saved, setSaved] = useState(!!isSavedUser);
   const [user, setUser] = useState<User>({
     email: "",
     isAuth: null,
+    error: false,
   });
 
-  const [saved, setSaved] = useState(!!isSaved);
+  useEffect(() => {
+    setUser({
+      email: isSavedUser ? isSavedUser : "",
+      isAuth: isUser,
+      error: false,
+    });
+  }, []);
 
-  const [error, setError] = useState(false);
-
-  const handleLoginReq = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const email: string = e.currentTarget.email.value;
-    const password: string = e.currentTarget.password.value;
-
-    const pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[a-zA-Z]).{6,}$/;
-    const result = pattern.test(password);
-    if (!result) setError(true);
-
-    if (saved) {
-      localStorage.setItem("user_email", email);
-    } else {
-      localStorage.removeItem("user_email");
-    }
-
-    axios
-      .post("/login", {
-        email,
-        password,
-      })
-      .then(() => setUser({ email: email, isAuth: true }))
-      .catch(() => console.log("Error"));
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    const loginRes = await login(e, saved);
+    setUser(loginRes);
   };
 
   const handleLogout = () => {
-    sessionStorage.setItem("is-authenticated", "false");
-    setUser({
-      email: isSaved ? isSaved : "",
-      isAuth: false,
-    });
+    const logoutRes = logout(isSavedUser);
+    setUser(logoutRes);
   };
-
-  useEffect(() => {
-    setUser({ email: isSaved ? isSaved : "", isAuth: isUser });
-  }, []);
 
   return (
     <div className="container">
@@ -65,7 +44,7 @@ function App() {
       ) : (
         <div className="login-container">
           <p className="login-title">SIGN IN TO YOUR ACCOUNT</p>
-          <form onSubmit={(e) => handleLoginReq(e)} className="login-form">
+          <form onSubmit={(e) => handleLogin(e)} className="login-form">
             <input
               type="email"
               id="email"
@@ -78,10 +57,10 @@ function App() {
               type="password"
               id="password"
               placeholder="Password"
-              className={`input ${error && "error"}`}
-              onChange={() => setError(false)}
+              className={`input ${user.error && "error"}`}
+              onChange={() => setUser({ ...user, error: false })}
             />
-            {error && (
+            {user.error && (
               <p className="error-msg">
                 Password must be at least 6 characters long and to contain at
                 least 1 digit
