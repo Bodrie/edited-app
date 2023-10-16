@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Button from "./components/Button/Button";
 import { login, logout } from "./services/services";
 import { User } from "./types";
 import "./App.css";
@@ -37,9 +38,9 @@ function App() {
       {user.isAuth ? (
         <div className="auth-container">
           <p className="user-greet">Hi, {user.email}</p>
-          <button className="logout button" onClick={handleLogout}>
+          <Button className="logout" onClick={handleLogout}>
             Logout
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="login-container">
@@ -76,9 +77,9 @@ function App() {
               />
               <label htmlFor="remember">Remember me</label>
             </div>
-            <button className="login button" type="submit">
+            <Button className="login" type="submit">
               Login Now
-            </button>
+            </Button>
           </form>
         </div>
       )}

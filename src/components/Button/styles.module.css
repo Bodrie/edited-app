@@ -1,0 +1,19 @@
+.button {
+  border: none;
+  border-radius: 15px;
+  padding: 15px 30px;
+  font-weight: 600;
+  max-width: 130px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.logout {
+  color: #333333;
+  background-color: #fff;
+}
+
+.login {
+  color: #fff;
+  background-color: #8978f3;
+}
