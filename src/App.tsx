@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import axios from "axios";
 import { User } from "./types";
+import "./App.css";
 
 function App() {
   const isUser = sessionStorage.getItem("is-authenticated") === "true";
@@ -47,32 +48,47 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div className="container">
       {user.isAuth ? (
-        <>
-          <p>Hi, {user.email}</p>
-          <button onClick={handleLogout}>Logout</button>
-        </>
+        <div className="auth-container">
+          <p className="user-greet">Hi, {user.email}</p>
+          <button className="logout button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       ) : (
-        <form onSubmit={(e) => handleLoginReq(e)}>
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={user.email}
-            onChange={(e) => setUser({ ...user, email: e.target.value })}
-          />
-          <label htmlFor="password">Password</label>
-          <input type="password" id="password" />
-          <label htmlFor="remember">Remember me</label>
-          <input
-            type="checkbox"
-            id="remember"
-            checked={saved}
-            onChange={() => setSaved(!saved)}
-          />
-          <button type="submit">Login</button>
-        </form>
+        <div className="login-container">
+          <p className="login-title">SIGN IN TO YOUR ACCOUNT</p>
+          <form onSubmit={(e) => handleLoginReq(e)} className="login-form">
+            <input
+              type="email"
+              id="email"
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              placeholder="Username"
+              className="input"
+            />
+            <input
+              type="password"
+              id="password"
+              placeholder="Password"
+              className="input"
+            />
+            <div className="input-checkbox">
+              <input
+                type="checkbox"
+                id="remember"
+                checked={saved}
+                onChange={() => setSaved(!saved)}
+                className="input"
+              />
+              <label htmlFor="remember">Remember me</label>
+            </div>
+            <button className="login button" type="submit">
+              Login Now
+            </button>
+          </form>
+        </div>
       )}
     </div>
   );
