@@ -41,6 +41,17 @@
   border-radius: 10px;
 }
 
+.input.error {
+  border: 1px solid red;
+}
+
+.error-msg {
+  position: absolute;
+  color: red;
+  font-size: 10px;
+  bottom: 135px
+}
+
 .input-checkbox {
   margin-left: 0;
   margin-right: auto;

@@ -15,10 +15,16 @@ function App() {
 
   const [saved, setSaved] = useState(!!isSaved);
 
+  const [error, setError] = useState(false);
+
   const handleLoginReq = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const email: string = e.currentTarget.email.value;
     const password: string = e.currentTarget.password.value;
+
+    const pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[a-zA-Z]).{6,}$/;
+    const result = pattern.test(password);
+    if (!result) setError(true);
 
     if (saved) {
       localStorage.setItem("user_email", email);
@@ -72,8 +78,15 @@ function App() {
               type="password"
               id="password"
               placeholder="Password"
-              className="input"
+              className={`input ${error && "error"}`}
+              onChange={() => setError(false)}
             />
+            {error && (
+              <p className="error-msg">
+                Password must be at least 6 characters long and to contain at
+                least 1 digit
+              </p>
+            )}
             <div className="input-checkbox">
               <input
                 type="checkbox"
