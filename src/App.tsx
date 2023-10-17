@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Button from "./components/Button/Button";
+import { Button, Input } from "./components";
 import { login, logout } from "./services/services";
 import { User } from "./types";
 import "./App.css";
@@ -11,15 +11,15 @@ function App() {
   const [saved, setSaved] = useState(!!isSavedUser);
   const [user, setUser] = useState<User>({
     email: "",
-    isAuth: null,
-    error: false,
+    isAuth: false,
+    error: "",
   });
 
   useEffect(() => {
     setUser({
       email: isSavedUser ? isSavedUser : "",
       isAuth: isUser,
-      error: false,
+      error: "",
     });
   }, []);
 
@@ -46,37 +46,33 @@ function App() {
         <div className="login-container">
           <p className="login-title">SIGN IN TO YOUR ACCOUNT</p>
           <form onSubmit={(e) => handleLogin(e)} className="login-form">
-            <input
+            <Input
               type="email"
               id="email"
               value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
               placeholder="Username"
-              className="input"
+              onChange={(e) =>
+                setUser({ ...user, email: e.target.value, error: "" })
+              }
+              error={user.error}
+              errorMsg="Invalid email address!"
             />
-            <input
+            <Input
               type="password"
               id="password"
               placeholder="Password"
-              className={`input ${user.error && "error"}`}
-              onChange={() => setUser({ ...user, error: false })}
+              onChange={() => setUser({ ...user, error: "" })}
+              error={user.error}
+              errorMsg="Invalid password!"
             />
-            {user.error && (
-              <p className="error-msg">
-                Password must be at least 6 characters long and to contain at
-                least 1 digit
-              </p>
-            )}
-            <div className="input-checkbox">
-              <input
-                type="checkbox"
-                id="remember"
-                checked={saved}
-                onChange={() => setSaved(!saved)}
-                className="input"
-              />
-              <label htmlFor="remember">Remember me</label>
-            </div>
+            <Input
+              type="checkbox"
+              id="remember"
+              checked={saved}
+              onChange={() => setSaved(!saved)}
+              label="Remember me"
+              labelPosition="after"
+            />
             <Button className="login" type="submit">
               Login Now
             </Button>

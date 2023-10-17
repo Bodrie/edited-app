@@ -8,12 +8,18 @@ export const login = async (
   const res = {
     email: e.currentTarget.email.value,
     isAuth: false,
-    error: false,
+    error: "",
   };
 
-  const isValid = passwordValidation(e.currentTarget.password.value);
-  if (!isValid) {
-    res.error = true;
+  const isValidEmail = emailValidation(e.currentTarget.email.value);
+  if (!isValidEmail) {
+    res.error = "email";
+    return res;
+  }
+
+  const isValidPassword = passwordValidation(e.currentTarget.password.value);
+  if (!isValidPassword) {
+    res.error = "password";
     return res;
   }
 
@@ -32,7 +38,10 @@ export const login = async (
       res.isAuth = true;
       return res;
     })
-    .catch(() => console.log("Error"));
+    .catch((e) => {
+      console.log(e);
+      return (res.error = "user");
+    });
 
   return res;
 };
@@ -43,8 +52,14 @@ export const logout = (savedEmail: string | null) => {
   return {
     email: savedEmail ? savedEmail : "",
     isAuth: false,
-    error: false,
+    error: "",
   };
+};
+
+export const emailValidation = (email: string) => {
+  const pattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  const result = pattern.test(email);
+  return result;
 };
 
 export const passwordValidation = (password: string) => {
